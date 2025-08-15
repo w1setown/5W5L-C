@@ -1,0 +1,5 @@
+[{
+		"file":	"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words\\prototype\\main.c",
+		"directory":	"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words\\prototype",
+		"command":	"C:/cygwin64/bin/gcc.exe -c \"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words\\prototype\\main.c\" -o \"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words\\prototype\\main.c\".o  -I. -I.  -O0  -gdwarf-2  -std=c99  -Wall"
+	}]
