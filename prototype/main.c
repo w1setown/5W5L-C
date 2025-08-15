@@ -21,8 +21,8 @@ bool isValidWord(const char* word) {
     bool used[26] = {false};
     int unique_count = 0;
     
-    for (size_t i = 0; word[i]; i++) {  // Changed int to size_t
-        if (!isalpha((unsigned char)word[i])) return false;  // Cast to unsigned char
+    for (size_t i = 0; word[i]; i++) {
+        if (!isalpha((unsigned char)word[i])) return false;
         int index = tolower((unsigned char)word[i]) - 'a';
         if (!used[index]) {
             used[index] = true;
