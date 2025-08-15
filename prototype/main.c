@@ -230,7 +230,8 @@ int main(int argc, char* argv[]) {
     printStats(wordList);
 
     clock_t end = clock();
-    double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
+    double time_spent = (double)(end - start)
+     / CLOCKS_PER_SEC;
     printf("\nTime taken: %.2f seconds\n", time_spent);
 
     findWordCombinations(wordList);
