@@ -11,7 +11,7 @@
 
 #define MAX_WORDS 400000
 #define WORDLEN   5
-#define COMBO_LEN 5 // Change this for N-word combos
+#define COMBO_LEN 5 // Change this for nth-word combos
 #define MAX_MEMORY_PERCENTAGE 0.75
 #define MIN_MEMORY_MB 100
 
