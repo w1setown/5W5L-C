@@ -1,0 +1,10 @@
+apple
+berry
+cherry
+grape
+lemon
+mango
+peach
+plum
+quilt
+zesty
