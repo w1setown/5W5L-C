@@ -54,8 +54,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := C:/cygwin64/bin/ar.exe rcu
 CXX      := C:/cygwin64/bin/x86_64-pc-cygwin-g++.exe
 CC       := C:/cygwin64/bin/gcc.exe
-CXXFLAGS :=  -O2 -march=native -Wall $(Preprocessors)
-CFLAGS   :=  -O2 -march=native -Wall $(Preprocessors)
+CXXFLAGS :=  -O3 -march=native -Wall $(Preprocessors)
+CFLAGS   :=  -O3 -march=native -Wall $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/cygwin64/bin/as.exe
 

@@ -1,5 +1,5 @@
 [{
 		"file":	"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words5Letters\\5Words5Letters\\main.c",
 		"directory":	"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words5Letters\\5Words5Letters",
-		"command":	"C:/cygwin64/bin/gcc.exe -c \"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words5Letters\\5Words5Letters\\main.c\" -o \"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words5Letters\\5Words5Letters\\main.c\".o  -DNDEBUG -I. -I.  -O2 -march=native -Wall"
+		"command":	"C:/cygwin64/bin/gcc.exe -c \"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words5Letters\\5Words5Letters\\main.c\" -o \"C:\\Users\\68691\\OneDrive - Syddansk Erhvervsskole\\Desktop\\5Words5Letters\\5Words5Letters\\main.c\".o  -DNDEBUG -I. -I.  -O3 -march=native -Wall"
 	}]
