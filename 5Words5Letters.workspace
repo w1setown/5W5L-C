@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CodeLite_Workspace Name="5Words" Database="" Version="10000">
-  <Project Name="prototype" Path="prototype/prototype.project" Active="Yes"/>
+<CodeLite_Workspace Name="5Words5Letters" Database="" Version="10000">
+  <Project Name="5Words5Letters" Path="5Words5Letters/5Words5Letters.project" Active="Yes"/>
   <BuildMatrix>
     <WorkspaceConfiguration Name="Debug">
       <Environment/>
-      <Project Name="prototype" ConfigName="Debug"/>
+      <Project Name="5Words5Letters" ConfigName="Debug"/>
     </WorkspaceConfiguration>
     <WorkspaceConfiguration Name="Release">
       <Environment/>
-      <Project Name="prototype" ConfigName="Release"/>
+      <Project Name="5Words5Letters" ConfigName="Release"/>
     </WorkspaceConfiguration>
   </BuildMatrix>
 </CodeLite_Workspace>

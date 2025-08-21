@@ -1,0 +1,1 @@
+../build-Debug/5Words5Letters/main.c.o

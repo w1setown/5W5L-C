@@ -1,1 +1,0 @@
-../build-Debug/prototype/main.c.o

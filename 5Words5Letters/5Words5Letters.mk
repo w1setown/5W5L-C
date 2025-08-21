@@ -2,19 +2,19 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Debug
-ProjectName            :=prototype
-ConfigurationName      :=Debug
-WorkspaceConfiguration :=Debug
-WorkspacePath          :="C:/Users/68691/OneDrive - Syddansk Erhvervsskole/Desktop/5Words"
-ProjectPath            :="C:/Users/68691/OneDrive - Syddansk Erhvervsskole/Desktop/5Words/prototype"
-IntermediateDirectory  :=../build-$(WorkspaceConfiguration)/prototype
+## Release
+ProjectName            :=5Words5Letters
+ConfigurationName      :=Release
+WorkspaceConfiguration :=Release
+WorkspacePath          :="C:/Users/68691/OneDrive - Syddansk Erhvervsskole/Desktop/5Words5Letters"
+ProjectPath            :="C:/Users/68691/OneDrive - Syddansk Erhvervsskole/Desktop/5Words5Letters/5Words5Letters"
+IntermediateDirectory  :=../build-$(WorkspaceConfiguration)/5Words5Letters
 OutDir                 :=$(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=68691
-Date                   :=15/08/2025
+Date                   :=21/08/2025
 CodeLitePath           :="C:/Program Files/CodeLite"
 MakeDirCommand         :=mkdir -p
 LinkerName             :=C:/cygwin64/bin/gcc.exe
@@ -29,9 +29,9 @@ OutputSwitch           :=-o
 LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
-OutputDirectory        :=C:/Users/68691/OneDrive - Syddansk Erhvervsskole/Desktop/5Words/build-$(WorkspaceConfiguration)/bin
+OutputDirectory        :=C:/Users/68691/OneDrive - Syddansk Erhvervsskole/Desktop/5Words5Letters/build-$(WorkspaceConfiguration)/bin
 OutputFile             :=..\build-$(WorkspaceConfiguration)\bin\$(ProjectName).exe
-Preprocessors          :=
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -39,7 +39,7 @@ ObjectsFileList        :=$(IntermediateDirectory)/ObjectsList.txt
 PCHCompileFlags        :=
 RcCmpOptions           := 
 RcCompilerName         :=windres
-LinkOptions            :=  -static
+LinkOptions            :=  
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 
@@ -54,8 +54,8 @@ LibPath                := $(LibraryPathSwitch).
 AR       := C:/cygwin64/bin/ar.exe rcu
 CXX      := C:/cygwin64/bin/x86_64-pc-cygwin-g++.exe
 CC       := C:/cygwin64/bin/gcc.exe
-CXXFLAGS :=  -gdwarf-2 -O0 -Wall $(Preprocessors)
-CFLAGS   :=  -O0 -gdwarf-2 -std=c99 -Wall $(Preprocessors)
+CXXFLAGS :=  -O2 -march=native -Wall $(Preprocessors)
+CFLAGS   :=  -O2 -march=native -Wall $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/cygwin64/bin/as.exe
 
@@ -96,7 +96,7 @@ PreBuild:
 ## Objects
 ##
 $(IntermediateDirectory)/main.c$(ObjectSuffix): main.c $(IntermediateDirectory)/main.c$(DependSuffix)
-	$(CC) $(SourceSwitch) "C:/Users/68691/OneDrive - Syddansk Erhvervsskole/Desktop/5Words/prototype/main.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.c$(ObjectSuffix) $(IncludePath)
+	$(CC) $(SourceSwitch) "C:/Users/68691/OneDrive - Syddansk Erhvervsskole/Desktop/5Words5Letters/5Words5Letters/main.c" $(CFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/main.c$(ObjectSuffix) $(IncludePath)
 $(IntermediateDirectory)/main.c$(DependSuffix): main.c
 	@$(CC) $(CFLAGS) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/main.c$(ObjectSuffix) -MF$(IntermediateDirectory)/main.c$(DependSuffix) -MM main.c
 
