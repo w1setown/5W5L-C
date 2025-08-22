@@ -1,3 +1,47 @@
+/*
+    This code is part of the 5Words5Letters project, which finds combinations of 5-letter words.
+
+    Performance optimization targets:
+       - Current word array layout causes cache misses when threads access random words
+       - Current fixed chunk distribution leads to thread starvation
+       - Random access in nested loops creates CPU pipeline stalls
+
+    To-Look at:
+    The worker function needs to be reworked. At the moment it is nesting as a method to find combinations,
+    this should be reworked to recursion. Recursion should help simplify the logic and reduce code duplication,
+    and also help with bottleneck issues, when reading larger datasets. 
+
+    Additionally, consider implementing a more efficient data structure for storing and accessing word combinations.
+
+
+
+    Results:
+
+    Date: 2025-08-22
+    Time: 13:20
+        System Memory Info:
+        Available Memory: 4267 MB
+        Using Memory Limit: 3200 MB
+        Max Words Capacity: 400000
+        Read 370105 total words from file
+        Found 10175 valid 5-letter words with unique letters
+
+        Using 16 threads
+        Starting search for 5-word combinations using all 25 letters...
+        Progress: 99% (processed 5918/5977)
+        Execution time: 21.780 seconds
+
+        Total valid 5-word combinations: 538
+
+        ==== Program exited with exit code: 0 ====
+        Time elapsed: 000:22.047 (MM:SS.MS)
+        Press any key to continue...
+
+*/
+
+
+
+// Preprocessors
 #include <pthread.h>
 #include <stdatomic.h>
 #include <stdio.h>
@@ -19,14 +63,9 @@
 static const int LETTER_FREQ_POS[26] = { 16, 9,  23, 25, 22, 10, 21, 5,  24, 1, 7, 12, 15,
                                          6,  20, 3,  2,  11, 14, 19, 13, 17, 0, 8, 18, 4 };
 
-// Rarity score for each letter (lower = rarer)
-static const int RARITY_SCORE[26] = { 22, 9,  16, 15, 25, 7,  11, 10, 23, 1,  4,  17, 13,
-                                      20, 18, 14, 0,  21, 24, 19, 14, 5,  21, 22, 8,  3 };
-
 typedef struct {
     char word[WORDLEN + 1];
     unsigned int mask;
-    int rarest_letter_score;
 } Word;
 
 static Word* words = NULL;
@@ -50,22 +89,6 @@ static inline int bit_count_u32(unsigned int x)
     x = (x & 0x33333333u) + ((x >> 2) & 0x33333333u);
     return ((x + (x >> 4)) & 0x0F0F0F0Fu) * 0x01010101u >> 24;
 #endif
-}
-
-// Utility: Calculate the rarest letter score for a word
-static int calculate_rarest_letter_score(const char* w)
-{
-    int rarest_score = 999;
-    for(int i = 0; i < WORDLEN; i++) {
-        char c = (char)(w[i] | 32);
-        if(c < 'a' || c > 'z')
-            return 999;
-        int freq_pos = LETTER_FREQ_POS[c - 'a'];
-        int rarity_score = RARITY_SCORE[freq_pos];
-        if(rarity_score < rarest_score)
-            rarest_score = rarity_score;
-    }
-    return rarest_score;
 }
 
 // Utility: Convert word to bitmask (remapped bits)
@@ -115,14 +138,11 @@ static int detect_thread_count(void)
     return (n > 0) ? (int)n : 8;
 }
 
-// Utility: Combined sort by mask and rarity score
+// Utility: Sort by mask
 static int compare_words(const void* a, const void* b)
 {
     const Word* wa = (const Word*)a;
     const Word* wb = (const Word*)b;
-    if(wa->mask == wb->mask) {
-        return wa->rarest_letter_score - wb->rarest_letter_score;
-    }
     return (wa->mask < wb->mask) ? -1 : 1;
 }
 
@@ -131,7 +151,6 @@ static void dedupe_by_mask_after_sort(void)
 {
     if(wordCount <= 1)
         return;
-    int originalCount = wordCount;
     int writePos = 0;
     for(int readPos = 0; readPos < wordCount; readPos++) {
         if(readPos == 0 || words[readPos].mask != words[readPos - 1].mask) {
@@ -247,7 +266,6 @@ int main(int argc, char** argv)
             strncpy(words[wordCount].word, buf, WORDLEN);
             words[wordCount].word[WORDLEN] = '\0';
             words[wordCount].mask = mask;
-            words[wordCount].rarest_letter_score = calculate_rarest_letter_score(buf);
             wordCount++;
             validWords++;
         }
