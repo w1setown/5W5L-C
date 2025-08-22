@@ -115,30 +115,15 @@ static int detect_thread_count(void)
     return (n > 0) ? (int)n : 8;
 }
 
-// Utility: Sort by rarest letter score, then mask
-static int compare_words_by_rarity(const void* a, const void* b)
+// Utility: Combined sort by mask and rarity score
+static int compare_words(const void* a, const void* b)
 {
     const Word* wa = (const Word*)a;
     const Word* wb = (const Word*)b;
-    if(wa->rarest_letter_score != wb->rarest_letter_score)
+    if(wa->mask == wb->mask) {
         return wa->rarest_letter_score - wb->rarest_letter_score;
-    if(wa->mask < wb->mask)
-        return -1;
-    if(wa->mask > wb->mask)
-        return 1;
-    return 0;
-}
-
-// Utility: Sort by mask (for deduplication)
-static int compare_words_by_mask(const void* a, const void* b)
-{
-    const Word* wa = (const Word*)a;
-    const Word* wb = (const Word*)b;
-    if(wa->mask < wb->mask)
-        return -1;
-    if(wa->mask > wb->mask)
-        return 1;
-    return 0;
+    }
+    return (wa->mask < wb->mask) ? -1 : 1;
 }
 
 // Utility: Remove anagrams (words with identical letter masks)
@@ -156,7 +141,6 @@ static void dedupe_by_mask_after_sort(void)
         }
     }
     wordCount = writePos;
-    // printf("Removed %d anagram duplicates\n", originalCount - wordCount);
 }
 
 // Worker thread: Find all valid 5-word combinations using nested loops and bitmasks
@@ -216,77 +200,6 @@ static void* worker(void* arg)
     return NULL;
 }
 
-// Recursive search for valid combinations
-static void search_recursive(int depth, int start, unsigned int used, int combo[], unsigned long long* count)
-{
-    if(depth == COMBO_LEN) {
-        (*count)++;
-        return;
-    }
-    for(int i = start; i < wordCount; i++) {
-        if((used & words[i].mask) == 0) {
-            combo[depth] = i;
-            search_recursive(depth + 1, i + 1, used | words[i].mask, combo, count);
-        }
-    }
-}
-
-#define MAX_BUCKETS 26
-typedef struct {
-    int* indices;
-    int count;
-    int capacity;
-} Bucket;
-
-Bucket letterBuckets[MAX_BUCKETS];
-
-// Utility: Initialize buckets for rarest letter scores
-static void init_buckets(void)
-{
-    for(int i = 0; i < MAX_BUCKETS; i++) {
-        letterBuckets[i].indices = malloc(sizeof(int) * 1024);
-        letterBuckets[i].count = 0;
-        letterBuckets[i].capacity = 1024;
-    }
-    for(int i = 0; i < wordCount; i++) {
-        int rare = words[i].rarest_letter_score;
-        if(letterBuckets[rare].count == letterBuckets[rare].capacity) {
-            letterBuckets[rare].capacity *= 2;
-            letterBuckets[rare].indices =
-                realloc(letterBuckets[rare].indices, sizeof(int) * letterBuckets[rare].capacity);
-        }
-        letterBuckets[rare].indices[letterBuckets[rare].count++] = i;
-    }
-}
-
-// Free allocated memory for buckets
-// Utility: Free allocated memory for buckets
-static void free_buckets(void)
-{
-    for(int i = 0; i < MAX_BUCKETS; i++) {
-        free(letterBuckets[i].indices);
-        letterBuckets[i].indices = NULL;
-        letterBuckets[i].count = 0;
-        letterBuckets[i].capacity = 0;
-    }
-}
-
-typedef struct {
-    int word_idx;
-    unsigned long long local_count;
-} RecThreadArg;
-
-// Worker for parallel recursive search
-static void* recursive_thread_worker(void* arg)
-{
-    RecThreadArg* a = (RecThreadArg*)arg;
-    int combo[COMBO_LEN];
-    combo[0] = a->word_idx;
-    unsigned int used = words[a->word_idx].mask;
-    a->local_count = 0;
-    search_recursive(1, a->word_idx + 1, used, combo, &a->local_count);
-    return NULL;
-}
 
 int main(int argc, char** argv)
 {
@@ -350,13 +263,9 @@ int main(int argc, char** argv)
         return 0;
     }
 
-    // Sort by mask for deduplication
-    qsort(words, wordCount, sizeof(Word), compare_words_by_mask);
+    // Sort by mask and rarity score
+    qsort(words, wordCount, sizeof(Word), compare_words);
     dedupe_by_mask_after_sort();
-
-    // Sort by letter rarity for optimal pruning
-
-    qsort(words, wordCount, sizeof(Word), compare_words_by_rarity);
 
     // Set up threading
     int hw = detect_thread_count();
@@ -395,39 +304,11 @@ int main(int argc, char** argv)
     }
 
     fprintf(stderr, "\n");
-    unsigned long long totalCount = 0;
-    int combo[COMBO_LEN];
-    search_recursive(0, 0, 0, combo, &totalCount);
-    printf("Total valid %d-word combinations: %llu\n", COMBO_LEN, totalCount);
+    printf("Total valid %d-word combinations: %llu\n", COMBO_LEN, atomic_load(&totalCount));
 
-    // Parallelize the recursive search by launching a thread for each word in the rarest bucket
-    init_buckets();
-    int rarest_bucket = 0;
-    while(rarest_bucket < MAX_BUCKETS && letterBuckets[rarest_bucket].count == 0)
-        rarest_bucket++;
-    int N = letterBuckets[rarest_bucket].count;
-
-    pthread_t* rec_threads = malloc(sizeof(pthread_t) * N);
-    RecThreadArg* rec_args = malloc(sizeof(RecThreadArg) * N);
-    if(rec_threads && rec_args) {
-        for(int i = 0; i < N; i++) {
-            rec_args[i].word_idx = letterBuckets[rarest_bucket].indices[i];
-            rec_args[i].local_count = 0;
-            pthread_create(&rec_threads[i], NULL, recursive_thread_worker, &rec_args[i]);
-        }
-        unsigned long long total_recursive_count = 0;
-        for(int i = 0; i < N; i++) {
-            pthread_join(rec_threads[i], NULL);
-            total_recursive_count += rec_args[i].local_count;
-        }
-        printf("Total valid %d-word combinations (parallel recursive): %llu\n", COMBO_LEN, total_recursive_count);
-    }
-    free(rec_threads);
-    free(rec_args);
-
+    // Clean up
     free(args);
     free(threads);
     free(words);
-    free_buckets();
     return 0;
 }
