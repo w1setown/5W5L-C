@@ -36,13 +36,6 @@ Målet er **maksimal hastighed og effektiv hukommelsesudnyttelse**, uden fokus p
 
 * Følg C-kodestandarder (navngivning, indrykning, konsistens).
 * Brug fejlhåndtering (tjek filpointer, allokering, inputfejl).
-* Del koden i **moduler**:
-
-  * `file_loader.c/.h`
-  * `word_filter.c/.h`
-  * `solver.c/.h`
-  * `main.c`
-
 ---
 
 ### **Step 4 – Optimer datastruktur**
