@@ -13,7 +13,7 @@
 int main(int argc, char** argv)
 {
     // CLI: -i <input>, -t <threads>
-    const char* inputPath = "5Words5Letters/lists/unique_words.txt";
+    const char* inputPath = "/unique_words.txt";
     int threadsWanted = 0;
     
     for(int a = 1; a < argc; a++) {
